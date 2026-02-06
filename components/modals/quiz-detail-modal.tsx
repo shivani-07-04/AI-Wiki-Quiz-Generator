@@ -5,34 +5,10 @@ import ArticleOverview from '@/components/sections/article-overview'
 import TopicSections from '@/components/sections/topic-sections'
 import QuizSection from '@/components/sections/quiz-section'
 import RelatedTopics from '@/components/sections/related-topics'
-
-interface QuizData {
-  id: number
-  url: string
-  title: string
-  summary: string
-  article_image: string
-  sections: Array<{
-    title: string
-    description: string
-    image: string
-  }>
-  quiz: Array<{
-    question: string
-    options: string[]
-    answer: string
-    difficulty: 'easy' | 'medium' | 'hard'
-    topic: string
-    explanation: string
-  }>
-  related_topics: Array<{
-    name: string
-    image: string
-  }>
-}
+import { QuizResponse } from '@/lib/api-client'
 
 interface QuizDetailModalProps {
-  quiz: QuizData
+  quiz: QuizResponse
   onClose: () => void
 }
 
@@ -59,7 +35,7 @@ export default function QuizDetailModal({
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex-1">
-                {quiz.title}
+                {quiz.article_title}
               </h2>
               <button
                 onClick={onClose}
@@ -73,13 +49,13 @@ export default function QuizDetailModal({
             {/* Content */}
             <div className="p-4 sm:p-6 space-y-8">
               <ArticleOverview
-                title={quiz.title}
-                summary={quiz.summary}
-                image={quiz.article_image}
-                url={quiz.url}
+                title={quiz.article_title}
+                summary={quiz.article_summary}
+                image={quiz.article_image_url}
+                url={quiz.wikipedia_url}
               />
               <TopicSections sections={quiz.sections} />
-              <QuizSection questions={quiz.quiz} />
+              <QuizSection questions={quiz.quiz_data} />
               <RelatedTopics topics={quiz.related_topics} />
             </div>
           </div>

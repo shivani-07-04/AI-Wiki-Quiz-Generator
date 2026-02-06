@@ -3,60 +3,63 @@
 import { useEffect, useState } from 'react'
 import { Loader2, Eye } from 'lucide-react'
 import QuizDetailModal from '@/components/modals/quiz-detail-modal'
-
-interface QuizHistory {
-  id: number
-  url: string
-  title: string
-  summary: string
-  article_image: string
-  sections: Array<{
-    title: string
-    description: string
-    image: string
-  }>
-  quiz: Array<{
-    question: string
-    options: string[]
-    answer: string
-    difficulty: 'easy' | 'medium' | 'hard'
-    topic: string
-    explanation: string
-  }>
-  related_topics: Array<{
-    name: string
-    image: string
-  }>
-  created_at: string
-}
+import { getHistory, getQuizById, QuizResponse, QuizHistoryItem } from '@/lib/api-client'
 
 export default function HistoryTab() {
-  const [history, setHistory] = useState<QuizHistory[]>([])
+  const [history, setHistory] = useState<QuizHistoryItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedQuiz, setSelectedQuiz] = useState<QuizHistory | null>(null)
+  const [error, setError] = useState('')
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizResponse | null>(null)
+  const [selectedLoading, setSelectedLoading] = useState(false)
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const response = await fetch('/api/quiz/history')
-        if (response.ok) {
-          const data = await response.json()
-          setHistory(data)
-        }
-      } catch (error) {
-        console.error('Failed to fetch history:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchHistory()
   }, [])
+
+  const fetchHistory = async () => {
+    try {
+      setError('')
+      const data = await getHistory(50, 0)
+      setHistory(data.quizzes)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch history')
+      console.error('Failed to fetch history:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleViewDetails = async (quizId: string) => {
+    try {
+      setSelectedLoading(true)
+      const quiz = await getQuizById(quizId)
+      setSelectedQuiz(quiz)
+    } catch (err) {
+      console.error('Failed to fetch quiz details:', err)
+      alert(err instanceof Error ? err.message : 'Failed to load quiz details')
+    } finally {
+      setSelectedLoading(false)
+    }
+  }
 
   if (loading) {
     return (
       <div className="flex justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+        <button
+          onClick={fetchHistory}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     )
   }
@@ -98,16 +101,16 @@ export default function HistoryTab() {
                 className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <td className="px-6 py-4 text-sm text-slate-900 dark:text-white font-medium">
-                  {item.title}
+                  {item.article_title}
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                   <a
-                    href={item.url}
+                    href={item.wikipedia_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 dark:text-blue-400 hover:underline truncate block"
                   >
-                    {item.url}
+                    {item.wikipedia_url}
                   </a>
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
@@ -115,10 +118,15 @@ export default function HistoryTab() {
                 </td>
                 <td className="px-6 py-4">
                   <button
-                    onClick={() => setSelectedQuiz(item)}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors text-sm font-medium"
+                    onClick={() => handleViewDetails(item.id)}
+                    disabled={selectedLoading}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Eye className="w-4 h-4" />
+                    {selectedLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                     View Details
                   </button>
                 </td>

@@ -2,15 +2,9 @@
 
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { QuizQuestion } from '@/lib/api-client'
 
-interface Question {
-  question: string
-  options: string[]
-  answer: string
-  difficulty: 'easy' | 'medium' | 'hard'
-  topic: string
-  explanation: string
-}
+type Question = QuizQuestion
 
 interface QuizSectionProps {
   questions: Question[]
@@ -87,14 +81,14 @@ export default function QuizSection({ questions }: QuizSectionProps) {
                       Choose your answer:
                     </p>
                     {question.options.map((option, optIdx) => {
-                      const optionLetter = String.fromCharCode(65 + optIdx)
-                      const isSelected = selectedAnswer === option
-                      const isAnswerCorrect = option === question.answer
+                      const optionText = typeof option === 'string' ? option : option.text
+                      const isSelected = selectedAnswer === optionText
+                      const isAnswerCorrect = optionText === question.correct_answer
 
                       return (
                         <button
                           key={optIdx}
-                          onClick={() => handleSelectAnswer(idx, option)}
+                          onClick={() => handleSelectAnswer(idx, optionText)}
                           className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-colors font-medium text-sm ${
                             isSelected
                               ? isAnswerCorrect
@@ -105,8 +99,8 @@ export default function QuizSection({ questions }: QuizSectionProps) {
                                 : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:border-slate-400 dark:hover:border-slate-500'
                           }`}
                         >
-                          <span className="font-bold mr-3">{optionLetter}.</span>
-                          {option}
+                          <span className="font-bold mr-3">{option.label}.</span>
+                          {optionText}
                         </button>
                       )
                     })}
@@ -121,15 +115,26 @@ export default function QuizSection({ questions }: QuizSectionProps) {
                           : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                       }`}
                     >
-                      <p
-                        className={`text-sm font-medium mb-2 ${
-                          isCorrect
-                            ? 'text-green-900 dark:text-green-300'
-                            : 'text-red-900 dark:text-red-300'
-                        }`}
-                      >
-                        {isCorrect ? '✓ Correct!' : '✗ Incorrect'}
-                      </p>
+                      <div className="flex items-start gap-2 mb-2">
+                        <span
+                          className={`text-sm font-medium ${
+                            isCorrect
+                              ? 'text-green-900 dark:text-green-300'
+                              : 'text-red-900 dark:text-red-300'
+                          }`}
+                        >
+                          {isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+                        </span>
+                        <span
+                          className={`text-xs font-medium ${
+                            isCorrect
+                              ? 'text-green-700 dark:text-green-400'
+                              : 'text-red-700 dark:text-red-400'
+                          }`}
+                        >
+                          (Correct answer: {question.correct_answer})
+                        </span>
+                      </div>
                       <p
                         className={`text-sm leading-relaxed ${
                           isCorrect
