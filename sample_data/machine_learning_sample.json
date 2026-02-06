@@ -1,0 +1,113 @@
+{
+  "id": 2,
+  "url": "https://en.wikipedia.org/wiki/Machine_learning",
+  "title": "Machine Learning",
+  "summary": "Machine learning is a branch of artificial intelligence (AI) and computer science which focuses on the use of data and algorithms to imitate the way that humans learn, gradually improving its accuracy. Machine learning is employed in a wide variety of computing tasks where designing and programming explicit algorithms is infeasible. Example applications include spam filtering, recommendation systems, detection of network intrusions, and computer vision.",
+  "sections": [
+    "History",
+    "Relationship to statistics",
+    "Relationship to data mining",
+    "Relationship to optimization",
+    "Algorithms",
+    "Dimensionality reduction",
+    "Objective functions",
+    "Applications",
+    "Limitations and challenges"
+  ],
+  "key_entities": {
+    "people": [
+      "Arthur Samuel",
+      "Tom Mitchell",
+      "Yann LeCun",
+      "Geoffrey Hinton",
+      "Yoshua Bengio"
+    ],
+    "organizations": [
+      "Google",
+      "Facebook",
+      "DeepMind",
+      "OpenAI",
+      "IBM"
+    ],
+    "locations": [
+      "Silicon Valley",
+      "Canada",
+      "United States",
+      "Switzerland"
+    ]
+  },
+  "quiz": [
+    {
+      "question": "What is the primary goal of machine learning?",
+      "options": [
+        "To write computer programs",
+        "To enable computers to learn from data and improve performance",
+        "To replace all software engineers",
+        "To create conscious machines"
+      ],
+      "answer": "To enable computers to learn from data and improve performance",
+      "difficulty": "easy",
+      "explanation": "Machine learning focuses on using data and algorithms to enable systems to learn from examples and gradually improve their accuracy without being explicitly programmed."
+    },
+    {
+      "question": "Which of the following is NOT a common type of machine learning?",
+      "options": [
+        "Supervised learning",
+        "Unsupervised learning",
+        "Reinforcement learning",
+        "Deterministic learning"
+      ],
+      "answer": "Deterministic learning",
+      "difficulty": "medium",
+      "explanation": "The three main types of machine learning are supervised learning, unsupervised learning, and reinforcement learning. Deterministic learning is not a recognized category in ML."
+    },
+    {
+      "question": "In supervised learning, what role do labels play?",
+      "options": [
+        "They are used to organize the data in folders",
+        "They provide the correct answers during training, enabling the model to learn patterns",
+        "They are only used for testing the model",
+        "They have no role in supervised learning"
+      ],
+      "answer": "They provide the correct answers during training, enabling the model to learn patterns",
+      "difficulty": "medium",
+      "explanation": "In supervised learning, labels (correct answers) are paired with input data to train models. The model learns to map inputs to outputs by minimizing the difference between predicted and actual labels."
+    },
+    {
+      "question": "What is the main difference between training data and test data?",
+      "options": [
+        "Test data is always larger",
+        "Training data is used to teach the model, while test data evaluates performance on unseen examples",
+        "There is no practical difference",
+        "Test data contains only errors"
+      ],
+      "answer": "Training data is used to teach the model, while test data evaluates performance on unseen examples",
+      "difficulty": "medium",
+      "explanation": "Training data is used to fit the model's parameters, while test data (which the model has never seen) is used to evaluate how well the model generalizes to new, unseen examples."
+    },
+    {
+      "question": "What problem occurs when a machine learning model performs well on training data but poorly on test data?",
+      "options": [
+        "Underfitting",
+        "Overfitting",
+        "Convergence failure",
+        "Bias-variance trade-off"
+      ],
+      "answer": "Overfitting",
+      "difficulty": "hard",
+      "explanation": "Overfitting happens when a model learns the training data too well, including its noise and peculiarities, causing it to perform poorly on new, unseen test data."
+    }
+  ],
+  "related_topics": [
+    "Deep learning",
+    "Neural networks",
+    "Natural language processing",
+    "Computer vision",
+    "Artificial intelligence",
+    "Data science",
+    "Statistical learning",
+    "Feature engineering",
+    "Cross-validation"
+  ],
+  "created_at": "2025-02-05T14:30:00Z"
+}
