@@ -1,44 +1,19 @@
 'use client'
 
 import React from "react"
-
 import { useState } from 'react'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import ArticleOverview from '@/components/sections/article-overview'
 import TopicSections from '@/components/sections/topic-sections'
 import QuizSection from '@/components/sections/quiz-section'
 import RelatedTopics from '@/components/sections/related-topics'
-
-interface QuizData {
-  id: number
-  url: string
-  title: string
-  summary: string
-  article_image: string
-  sections: Array<{
-    title: string
-    description: string
-    image: string
-  }>
-  quiz: Array<{
-    question: string
-    options: string[]
-    answer: string
-    difficulty: 'easy' | 'medium' | 'hard'
-    topic: string
-    explanation: string
-  }>
-  related_topics: Array<{
-    name: string
-    image: string
-  }>
-}
+import { generateQuiz, QuizResponse } from '@/lib/api-client'
 
 export default function GenerateTab() {
   const [url, setUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [quizData, setQuizData] = useState<QuizData | null>(null)
+  const [quizData, setQuizData] = useState<QuizResponse | null>(null)
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,17 +21,7 @@ export default function GenerateTab() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/quiz/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to generate quiz')
-      }
-
-      const data = await response.json()
+      const data = await generateQuiz({ url })
       setQuizData(data)
     } catch (err) {
       setError(
@@ -64,6 +29,7 @@ export default function GenerateTab() {
           ? err.message
           : 'Failed to generate quiz. Please try again.'
       )
+      console.error('Quiz generation error:', err)
     } finally {
       setLoading(false)
     }
@@ -116,13 +82,13 @@ export default function GenerateTab() {
       {quizData && (
         <div className="space-y-8 animate-fade-in">
           <ArticleOverview
-            title={quizData.title}
-            summary={quizData.summary}
-            image={quizData.article_image}
-            url={quizData.url}
+            title={quizData.article_title}
+            summary={quizData.article_summary}
+            image={quizData.article_image_url}
+            url={quizData.wikipedia_url}
           />
           <TopicSections sections={quizData.sections} />
-          <QuizSection questions={quizData.quiz} />
+          <QuizSection questions={quizData.quiz_data} />
           <RelatedTopics topics={quizData.related_topics} />
         </div>
       )}
